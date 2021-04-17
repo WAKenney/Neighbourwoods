@@ -3,5 +3,5 @@ dash==1.19.0
 dash_table==4.11.2
 pandas==1.2.3
 geopandas==0.8.1
-streamlit==0.77.0
+streamlit==0.90.0
 numpy==1.19.2
