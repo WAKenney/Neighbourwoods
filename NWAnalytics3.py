@@ -12,7 +12,6 @@ st.set_page_config(page_title = ' Neighbourwoods', layout="wide")
 token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7vGo7j5cHb4iBX0Vse4ieQ")
 
 st.title('Neighbourwoods Inventory Analytics 3.0')
-st.title('April 2021')
 tableFrame = st.empty()
 mapFrame = st.empty()
 
