@@ -181,7 +181,7 @@ def getSelection(data):
         mapFrame.write('')
         
         
-        
+
 ################################################ Analyze the diversity 
        
     st.sidebar.subheader("Do you want to analyze the tree DIVERSITY?")
@@ -202,9 +202,13 @@ def getSelection(data):
     if originYesOrNo == 'Analyze origin':
         speciesOrigin(select_df)
 
+############################################# Analyze tree condition
 
-
-
+    st.sidebar.subheader("Do you want to analyze the tree CONDITION?")
+    conditionYesOrNo = st.sidebar.radio("", options =('Analyze condition', "Hide the condition analysis"))
+    
+    if conditionYesOrNo == 'Analyze condition ':
+        treeCondition(select_df)
 
 # ################################################## Map the selected data
 def mapIt(mapData):
@@ -359,10 +363,77 @@ def speciesOrigin(data):
         
 ########################### Tree condition analysis###########################
 
+def treeCondition(data):
+                    
+    # totalCount = len(data.index)
+    # topTenSpecies = data.loc[: , [divLevel, 'tree_name']]
+    conditionPT = pd.pivot_table(data, index=['defects'], aggfunc='count')
+    conditionPT.reset_index(inplace=True)
+    # topTenSorted = topTenSpeciesPT.sort_values(by='tree_name',ascending=False).head(10)
+    conditionTotal = conditionPT['defects'].sum()
+    otherTotal = totalCount - topTenTotal
+    # topTenPlusOther = topTenSorted.append({divLevel:'Other', 'tree_name': otherTotal}, ignore_index =True)
+    # topTenPlusOther.rename(columns = {'tree_name': 'frequency'},inplace = True)
+    
+    conditionPie = px.pie(conditionTotal, values='defects', names = 'defects', title='Tree Condition')
+    conditionPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
+    conditionPie.update_layout(showlegend=False)
+    
+    
+    TopTenTable = go.Figure(go.Table(
+    header=dict(values=list(topTenPlusOther.columns),
+                fill_color='paleturquoise',
+                align='left'),
+    cells=dict(values=[topTenPlusOther[divLevel], topTenPlusOther.frequency],
+                fill_color='lavender',
+                align='left')))
+    
+    
+    sppTable, sppChart =st.beta_columns (2)
+    
+    with sppTable:
+        st.plotly_chart(TopTenTable)
+    
+    with sppChart:
+        st.plotly_chart(speciesPie)
+ 
+        
+ 
+    totalCpa = data['cpa'].sum()
+    
+    topTenCpa = data.loc[: , [divLevel, 'cpa']]
+    topTenCpaPT = pd.pivot_table(topTenCpa, index=[divLevel], aggfunc='sum')
+    topTenCpaPT.reset_index(inplace=True)
+    topTenCpaSorted = topTenCpaPT.sort_values(by='cpa',ascending=False).head(10)
+    topTenCpaTotal = topTenCpaSorted['cpa'].sum()
+    otherCpaTotal = totalCpa - topTenCpaTotal
+    topTenCpaPlusOther = topTenCpaSorted.append({divLevel:'Other', 'cpa': otherCpaTotal}, ignore_index =True)
+    topTenCpaPlusOther.rename(columns = {'cpa': 'Crown Projection Area'},inplace = True)
+    
+    CpaPie = px.pie(topTenCpaPlusOther, values='Crown Projection Area', names = divLevel, title='Tree Diversity by Crown Projectin Area')
+    CpaPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
+    CpaPie.update_layout(showlegend=False)
+    
+    
+    TopTenCpaTable = go.Figure(go.Table(
+    header=dict(values=list(topTenCpaPlusOther.columns),
+                fill_color='paleturquoise',
+                align='left'),
+    cells=dict(values=[topTenCpaPlusOther[divLevel], topTenCpaPlusOther['Crown Projection Area']],
+                fill_color='lavender',
+                align='left')))
+    
+    
+    sppTable, sppChart =st.beta_columns (2)
+    
+    with sppTable:
+        st.plotly_chart(TopTenCpaTable)
+    
+    with sppChart:
+        st.plotly_chart(CpaPie)
 
 
-
-########################### Relative SBH Analysis  ###########################
+########################### Relative DBH Analysis  ###########################
 
 
 
