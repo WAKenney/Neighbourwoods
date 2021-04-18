@@ -3,5 +3,5 @@ dash==1.19.0
 pandas==1.2.3
 numpy==1.19.2
 plotly==4.14.3
-dash_table==4.4.1
+dash_table
 streamlit==0.80.0
