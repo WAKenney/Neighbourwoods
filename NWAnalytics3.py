@@ -20,10 +20,14 @@ mapFrame = st.empty()
 
 # @st.cache
 def getData():
-    df = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\LargeDataSummary.csv")
+    # df = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\LargeDataSummary.csv")
+    df = pd.read_csv("LargeDataSummary.csv")
     
-    speciesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWspecies180321.csv")
-    codesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWcodes180321.csv")
+    # speciesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWspecies180321.csv")
+    speciesTable = pd.read_csv("NWspecies180321.csv")
+    
+    # codesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWcodes180321.csv")
+    codesTable = pd.read_csv("NWcodes180321.csv")
     
     df=df.rename(columns = {'Tree Name':'tree_name','Description':'description','Longitude':'longitude',
                                       'Latitude':'latitude','Date':'date','Block ID':'block','Tree Number':'tree_number',
