@@ -7,11 +7,24 @@ import plotly.graph_objects as go
 import numpy as np
 import dash
 import dash_table
+from PIL import Image
+
+
+# import os
 
 st.set_page_config(page_title = ' Neighbourwoods', layout="wide")
+
 token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7vGo7j5cHb4iBX0Vse4ieQ")
 
-st.title('Neighbourwoods Inventory Analytics 3.0')
+logoHeader, titleHeader =st.beta_columns (2)
+    
+with logoHeader:
+    NWLogo = Image.open(r"C:\Users\HP\Neighbourwoods\nw_logo.bmp")
+    st.image(NWLogo)
+
+with titleHeader:
+    st.title('Neighbourwoods Inventory Analytics 3.0')
+
 tableFrame = st.empty()
 mapFrame = st.empty()
 
@@ -20,14 +33,24 @@ mapFrame = st.empty()
 
 # @st.cache
 def getData():
-    # df = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\LargeDataSummary.csv")
-    df = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmmprSVUW5MQhaQB?e=FeCyI6")
     
-    # speciesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWspecies180321.csv")
-    speciesTable = pd.read_csv('https://1drv.ms/u/s!Alu-nJHZ-vTwlmhT5TrM35QjegQb?e=nYp9g2')
+    # THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    # dataFile = os.path.join(THIS_FOLDER, "'LargeDataSummary.csv'")
+    # speciesFile = os.path.join(THIS_FOLDER, "'NWspecies180321.csv'")
+    # codesFile = os.path.join(THIS_FOLDER, "'NWcodes180321.csv'")
+
     
-    # codesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWcodes180321.csv")
-    codesTable = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmfI8-76yZ5bomr4?e=qe3UoX")
+    df = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\LargeDataSummary.csv")
+    # df = pd.read_csv(dataFile)
+    # df = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmmprSVUW5MQhaQB?e=FeCyI6")
+    
+    speciesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWspecies180321.csv")
+    # speciesTable = pd.read_csv('r'+speciesFile)
+    # speciesTable = pd.read_csv('https://1drv.ms/u/s!Alu-nJHZ-vTwlmhT5TrM35QjegQb?e=nYp9g2')
+    
+    codesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWcodes180321.csv")
+    # codesTable = pd.read_csv('r'+NWcodes180321.csv)
+    # codesTable = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmfI8-76yZ5bomr4?e=qe3UoX")
     
     df=df.rename(columns = {'Tree Name':'tree_name','Description':'description','Longitude':'longitude',
                                       'Latitude':'latitude','Date':'date','Block ID':'block','Tree Number':'tree_number',
