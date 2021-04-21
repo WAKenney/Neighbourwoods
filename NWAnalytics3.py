@@ -8,9 +8,7 @@ import numpy as np
 import dash
 import dash_table
 from PIL import Image
-
-
-# import os
+import os
 
 st.set_page_config(page_title = ' Neighbourwoods', layout="wide")
 
@@ -38,7 +36,7 @@ def getData():
     # dataFile = os.path.join(THIS_FOLDER, "'LargeDataSummary.csv'")
     # speciesFile = os.path.join(THIS_FOLDER, "'NWspecies180321.csv'")
     # codesFile = os.path.join(THIS_FOLDER, "'NWcodes180321.csv'")
-
+    currentDir = os.getcwd()
     
     df = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\LargeDataSummary.csv")
     # df = pd.read_csv(dataFile)
