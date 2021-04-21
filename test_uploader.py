@@ -3,21 +3,23 @@ import io
 import streamlit as st
 import os
 
-currentDir = os.getcwd() + '\\Neighbourwoods\\'
-
-
-# currentDir= '\\Neighbourwoods\\' + os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-st.write(currentDir)
-
-myFile = currentDir + '\LargeDataSummary.csv'
-
-st.write(myFile)
+currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
 
 with st.spinner('Please wait while your file is uploaded...'):
-    df = pd.read_csv(myFile,encoding='cp1252')
+    # df = pd.read_csv(myFile,encoding='cp1252')
+    speciesFile = currentDir + 'NWspecies180321.csv'
+    speciesTable = pd.read_csv(speciesFile)
+    
+    codesFile = currentDir + 'NWcodes180321.csv'
+    codesTable = pd.read_csv(codesFile,encoding='cp1252')
+    
+    dfFile = currentDir + 'LargeDataSummary.csv'
+    dfTable = pd.read_csv(dfFile,encoding='cp1252')
+    
+    st.write(speciesTable)
+    st.write(codesTable)
+    st.write(dfTable)
 
-st.write(df)
 
 # "C:\Users\HP\Neighbourwoods\LargeDataSummary.csv"
 

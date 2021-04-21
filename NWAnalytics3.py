@@ -32,23 +32,36 @@ mapFrame = st.empty()
 @st.cache(allow_output_mutation=True)
 def getData():
     
-    # THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-    # dataFile = os.path.join(THIS_FOLDER, "'LargeDataSummary.csv'")
-    # speciesFile = os.path.join(THIS_FOLDER, "'NWspecies180321.csv'")
-    # codesFile = os.path.join(THIS_FOLDER, "'NWcodes180321.csv'")
-    currentDir = os.getcwd()
+    currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
+
+    with st.spinner('Please wait while your file is uploaded...'):
+        # df = pd.read_csv(myFile,encoding='cp1252')
+        speciesFile = currentDir + 'NWspecies180321.csv'
+        speciesTable = pd.read_csv(speciesFile)
+        
+        codesFile = currentDir + 'NWcodes180321.csv'
+        codesTable = pd.read_csv(codesFile,encoding='cp1252')
+        
+        dfFile = currentDir + 'LargeDataSummary.csv'
+        df = pd.read_csv(dfFile,encoding='cp1252')
+        
+        # st.write(speciesTable)
+        # st.write(codesTable)
+        # st.write(dfTable)
     
-    df = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\LargeDataSummary.csv")
-    # df = pd.read_csv(dataFile)
-    # df = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmmprSVUW5MQhaQB?e=FeCyI6")
+  
     
-    speciesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWspecies180321.csv")
-    # speciesTable = pd.read_csv('r'+speciesFile)
-    # speciesTable = pd.read_csv('https://1drv.ms/u/s!Alu-nJHZ-vTwlmhT5TrM35QjegQb?e=nYp9g2')
+    # df = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\LargeDataSummary.csv")
+    # # df = pd.read_csv(dataFile)
+    # # df = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmmprSVUW5MQhaQB?e=FeCyI6")
     
-    codesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWcodes180321.csv")
-    # codesTable = pd.read_csv('r'+NWcodes180321.csv)
-    # codesTable = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmfI8-76yZ5bomr4?e=qe3UoX")
+    # speciesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWspecies180321.csv")
+    # # speciesTable = pd.read_csv('r'+speciesFile)
+    # # speciesTable = pd.read_csv('https://1drv.ms/u/s!Alu-nJHZ-vTwlmhT5TrM35QjegQb?e=nYp9g2')
+    
+    # codesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWcodes180321.csv")
+    # # codesTable = pd.read_csv('r'+NWcodes180321.csv)
+    # # codesTable = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmfI8-76yZ5bomr4?e=qe3UoX")
     
     df=df.rename(columns = {'Tree Name':'tree_name','Description':'description','Longitude':'longitude',
                                       'Latitude':'latitude','Date':'date','Block ID':'block','Tree Number':'tree_number',
