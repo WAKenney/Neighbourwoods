@@ -16,9 +16,9 @@ token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7v
 
 logoHeader, titleHeader =st.beta_columns (2)
     
-with logoHeader:
-    NWLogo = Image.open(r"C:\Users\HP\Neighbourwoods\nw_logo.bmp")
-    st.image(NWLogo)
+# with logoHeader:
+#     NWLogo = Image.open(r"C:\Users\HP\Neighbourwoods\nw_logo.bmp")
+#     st.image(NWLogo)
 
 with titleHeader:
     st.title('Neighbourwoods Inventory Analytics 3.0')
