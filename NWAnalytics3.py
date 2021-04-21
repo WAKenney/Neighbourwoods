@@ -10,18 +10,21 @@ import dash_table
 from PIL import Image
 import os
 
-st.set_page_config(page_title = ' Neighbourwoods', layout="wide")
+st.set_page_config(layout="wide")
 
 token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7vGo7j5cHb4iBX0Vse4ieQ")
 
-logoHeader, titleHeader =st.beta_columns (2)
+# logoHeader, titleHeader =st.beta_columns (2)
     
 # with logoHeader:
 #     NWLogo = Image.open(r"C:\Users\HP\Neighbourwoods\nw_logo.bmp")
 #     st.image(NWLogo)
 
-with titleHeader:
-    st.title('Neighbourwoods Inventory Analytics 3.0')
+# with titleHeader:
+# st.title('Neighbourwoods Inventory Analytics 3.0')
+
+NWTitle = Image.open(r"C:\Users\HP\Neighbourwoods\NWAnalyticsTitleTransparent.png")
+st.image(NWTitle)
 
 tableFrame = st.empty()
 mapFrame = st.empty()
