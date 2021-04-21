@@ -31,7 +31,7 @@ mapFrame = st.empty()
 
 ##################################################  Load and arrange the data #################################################
 
-# @st.cache
+@st.cache(allow_output_mutation=True)
 def getData():
     
     # THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
@@ -87,7 +87,7 @@ def getData():
     
     df = pd.merge(df, speciesTable[['species', 'diversity_level']], on="species", how="left", sort=False)
         
-    df2 = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude))
+    df2 = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude)).copy()
     
     df2 = df2[['tree_name','description','species', 'genus', 'family', 'address', 'ownership_code', 'location_code', 'native', 'crown_width',
                'cpa', 'dbh_class', 'defects', 'diversity_level', 'latitude', 'longitude']]
