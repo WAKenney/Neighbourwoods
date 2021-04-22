@@ -23,7 +23,10 @@ token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7v
 # with titleHeader:
 # st.title('Neighbourwoods Inventory Analytics 3.0')
 
-NWTitle = Image.open(r"C:\Users\HP\Neighbourwoods\NWAnalyticsTitleTransparent.png")
+currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
+
+NWTitleFile = currentDir + 'NWTitle2.png'
+NWTitle = Image.open(NWTitleFile)
 st.image(NWTitle)
 
 tableFrame = st.empty()
@@ -35,7 +38,7 @@ mapFrame = st.empty()
 @st.cache(allow_output_mutation=True)
 def getData():
     
-    currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
+    
 
     with st.spinner('Please wait while your file is uploaded...'):
         # df = pd.read_csv(myFile,encoding='cp1252')
