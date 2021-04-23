@@ -12,19 +12,22 @@ import os
 
 st.set_page_config(layout="wide")
 
+st.title('***Neighbourwoods Analytics 3.0***')
+
 currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
 
 tableFrame = st.empty()
 mapFrame = st.empty()
 
-
-##################################################  Load and arrange the data #################################################
-
 @st.cache(allow_output_mutation=True)
 def getData():
-    
-    
 
+    '''
+    **************************
+    Load and arrange the data
+    ************************** 
+    '''
+    
     with st.spinner('Please wait while your file is uploaded...'):
         # df = pd.read_csv(myFile,encoding='cp1252')
         speciesFile = currentDir + 'NWspecies180321.csv'
@@ -36,24 +39,6 @@ def getData():
         dfFile = currentDir + 'LargeDataSummary.csv'
         df = pd.read_csv(dfFile,encoding='cp1252')
         
-        # st.write(speciesTable)
-        # st.write(codesTable)
-        # st.write(dfTable)
-    
-  
-    
-    # df = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\LargeDataSummary.csv")
-    # # df = pd.read_csv(dataFile)
-    # # df = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmmprSVUW5MQhaQB?e=FeCyI6")
-    
-    # speciesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWspecies180321.csv")
-    # # speciesTable = pd.read_csv('r'+speciesFile)
-    # # speciesTable = pd.read_csv('https://1drv.ms/u/s!Alu-nJHZ-vTwlmhT5TrM35QjegQb?e=nYp9g2')
-    
-    # codesTable = pd.read_csv(r"C:\Users\HP\Documents\Data\Files\Python Scripts\neighbourwoods\NWcodes180321.csv")
-    # # codesTable = pd.read_csv('r'+NWcodes180321.csv)
-    # # codesTable = pd.read_csv("https://1drv.ms/u/s!Alu-nJHZ-vTwlmfI8-76yZ5bomr4?e=qe3UoX")
-    
     df=df.rename(columns = {'Tree Name':'tree_name','Description':'description','Longitude':'longitude',
                                       'Latitude':'latitude','Date':'date','Block ID':'block','Tree Number':'tree_number',
                                       'Species':'species','Genus':'genus','Family':'family','Street':'street',
@@ -96,8 +81,6 @@ def getData():
     
     return df2
 
-
-
 ##################################################### Show data table ##########################################
 def showTable(data, selectedCols):
     
@@ -130,6 +113,10 @@ def showTable(data, selectedCols):
 # ###################################################   Select data for mapping and analysis
 
 def getSelection(data):
+    ''' 
+    This allows the user to filter the data with an output dataframe called select_df.
+    This is also where the dashboard is setup in the sidebar.
+    '''
         
     data_columns = data.columns.values.tolist()
     paramColumns = ['tree_name','species', 'genus', 'family', 'address', 'ownership_code', 
@@ -182,9 +169,9 @@ def getSelection(data):
 ####################################### Show the tree data in a table
     
     st.sidebar.subheader("Do you want to SHOW the data in a table?")
-    showYesOrNo = st.sidebar.radio("", options =('Show data', "Hide data"))
+    showYesOrNo = st.sidebar.radio("", options =('Show the data', "Hide the data"))
     
-    if showYesOrNo == 'Show data':
+    if showYesOrNo == 'Show the data':
         selectedCols = st.sidebar.multiselect('Select the ADDITIONAL columns to show in the table', data_columns)
         tableFrame.plotly_chart(showTable(select_df, selectedCols))
     else:
@@ -207,9 +194,9 @@ def getSelection(data):
 ################################################ Analyze the diversity 
        
     st.sidebar.subheader("Do you want to analyze the tree DIVERSITY?")
-    diversityYesOrNo = st.sidebar.radio("", options =('Analyze diversity', "Hide the diversity analysis"))
+    diversityYesOrNo = st.sidebar.radio("", options =('Analyze species diversity', "Hide the diversity analysis"))
     
-    if diversityYesOrNo == 'Analyze diversity':
+    if diversityYesOrNo == 'Analyze species diversity':
         diversity(select_df)
 
         
@@ -219,9 +206,9 @@ def getSelection(data):
     #     speciesOrigin(select_df)
         
     st.sidebar.subheader("Do you want to analyze the tree ORIGIN?")
-    originYesOrNo = st.sidebar.radio("", options =('Analyze origin', "Hide the origin analysis"))
+    originYesOrNo = st.sidebar.radio("", options =('Analyze species origin', "Hide the origin analysis"))
     
-    if originYesOrNo == 'Analyze origin':
+    if originYesOrNo == 'Analyze species origin':
         speciesOrigin(select_df)
 
 ############################################# Analyze tree condition
