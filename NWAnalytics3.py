@@ -12,22 +12,7 @@ import os
 
 st.set_page_config(layout="wide")
 
-token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7vGo7j5cHb4iBX0Vse4ieQ")
-
-# logoHeader, titleHeader =st.beta_columns (2)
-    
-# with logoHeader:
-#     NWLogo = Image.open(r"C:\Users\HP\Neighbourwoods\nw_logo.bmp")
-#     st.image(NWLogo)
-
-# with titleHeader:
-# st.title('Neighbourwoods Inventory Analytics 3.0')
-
 currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
-
-NWTitleFile = currentDir + 'NWTitle2.png'
-NWTitle = Image.open(NWTitleFile)
-st.image(NWTitle)
 
 tableFrame = st.empty()
 mapFrame = st.empty()
@@ -112,13 +97,6 @@ def getData():
     return df2
 
 
-gdf = getData()
-
-codes={'No major defects':"#006400", 'Major health defect':'#7CFC00', 'Major structural defect(s)':'#ADFF2F',
-           'Major structural AND health defect(s)':'#FFFF00', 'N/A':'#708090' } #steup colour codes for levels of tree condition
-
-CondcolorOrder = {'defects' : ['No major defects', 'Major health defect', 'Major structural defect(s)',
-                               'Major structural AND health defect(s)', 'Condition was not assessed']}# setup order for legend
 
 ##################################################### Show data table ##########################################
 def showTable(data, selectedCols):
@@ -289,7 +267,8 @@ def mapIt(mapData):
         fig.update_layout(mapbox_style = 'open-street-map')
     else:    
         # useSatellite(fig)
-        
+        st.write('To use Google satelite images you will need a free Google Maps API Key.  Go to https://elfsight.com/blog/2018/06/how-to-get-google-maps-api-key-guide/ ')
+        token = st.text_input('Enter your Google Maps API Key')
         fig.update_layout(mapbox_style = 'satellite', mapbox_accesstoken = token )
         
         
@@ -493,8 +472,16 @@ def treeCondition(data):
 ########################### Backup tree table  ###########################
    
 ################################# setup up the function button across the top of the page ##################################
+
+gdf = getData()
+
+codes={'No major defects':"#006400", 'Major health defect':'#7CFC00', 'Major structural defect(s)':'#ADFF2F',
+           'Major structural AND health defect(s)':'#FFFF00', 'N/A':'#708090' } #steup colour codes for levels of tree condition
+
+CondcolorOrder = {'defects' : ['No major defects', 'Major health defect', 'Major structural defect(s)',
+                               'Major structural AND health defect(s)', 'Condition was not assessed']}# setup order for legend
+
 select_df = getSelection(gdf)
 
 
     
-

@@ -1,24 +1,61 @@
 import pandas as pd
-import io
+import geopandas as gpd
 import streamlit as st
+import plotly.express as px
+import plotly.graph_objects as go
+import numpy as np
+import dash
+import dash_table
+from PIL import Image
 import os
 
-currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
+st.set_page_config(layout="wide")
 
-with st.spinner('Please wait while your file is uploaded...'):
-    # df = pd.read_csv(myFile,encoding='cp1252')
-    speciesFile = currentDir + 'NWspecies180321.csv'
-    speciesTable = pd.read_csv(speciesFile)
+token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7vGo7j5cHb4iBX0Vse4ieQ")
+
+# currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
+
+currentDir = 'https://github.com/WAKenney/Neighbourwoods'
+
+NWTitleFile = '(r"' +  currentDir + 'NWTitle2.png")'
+
+st.write(NWTitleFile)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# import pandas as pd
+# import io
+# import streamlit as st
+# import os
+
+# currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
+
+# with st.spinner('Please wait while your file is uploaded...'):
+#     # df = pd.read_csv(myFile,encoding='cp1252')
+#     speciesFile = currentDir + 'NWspecies180321.csv'
+#     speciesTable = pd.read_csv(speciesFile)
     
-    codesFile = currentDir + 'NWcodes180321.csv'
-    codesTable = pd.read_csv(codesFile,encoding='cp1252')
+#     codesFile = currentDir + 'NWcodes180321.csv'
+#     codesTable = pd.read_csv(codesFile,encoding='cp1252')
     
-    dfFile = currentDir + 'LargeDataSummary.csv'
-    dfTable = pd.read_csv(dfFile,encoding='cp1252')
+#     dfFile = currentDir + 'LargeDataSummary.csv'
+#     dfTable = pd.read_csv(dfFile,encoding='cp1252')
     
-    st.write(speciesTable)
-    st.write(codesTable)
-    st.write(dfTable)
+#     st.write(speciesTable)
+#     st.write(codesTable)
+#     st.write(dfTable)
 
 
 # "C:\Users\HP\Neighbourwoods\LargeDataSummary.csv"
