@@ -1,25 +1,3 @@
-import pandas as pd
-import geopandas as gpd
-import streamlit as st
-import plotly.express as px
-import plotly.graph_objects as go
-import numpy as np
-import dash
-import dash_table
-from PIL import Image
-import os
-
-st.set_page_config(layout="wide")
-
-token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7vGo7j5cHb4iBX0Vse4ieQ")
-
-# currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
-
-currentDir = 'https://github.com/WAKenney/Neighbourwoods'
-
-NWTitleFile = '(r"' +  currentDir + 'NWTitle2.png")'
-
-st.write(NWTitleFile)
 
 
 
@@ -30,11 +8,33 @@ st.write(NWTitleFile)
 
 
 
+# import pandas as pd
+# import geopandas as gpd
+# import streamlit as st
+# import plotly.express as px
+# import plotly.graph_objects as go
+# import numpy as np
+# import dash
+# import dash_table
+# from PIL import Image
+# import os
+
+# st.set_page_config(layout="wide")
+
+# token = ("pk.eyJ1Ijoid2FrZW5uZXkiLCJhIjoiY2tqMGZtZzhkMGFuNjJxcGJ2MWo5eGwzZyJ9.7vGo7j5cHb4iBX0Vse4ieQ")
+
+# # currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
+
+# currentDir = 'https://github.com/WAKenney/Neighbourwoods'
+
+# NWTitleFile = '(r"' +  currentDir + 'NWTitle2.png")'
+
+# st.write(NWTitleFile)
 
 
 
 
-
+# #################### THIS WORKS *******************************
 # import pandas as pd
 # import io
 # import streamlit as st
@@ -57,9 +57,6 @@ st.write(NWTitleFile)
 #     st.write(codesTable)
 #     st.write(dfTable)
 
-
-# "C:\Users\HP\Neighbourwoods\LargeDataSummary.csv"
-
 # def getData():
 #     fileDownload = st.empty()
     
@@ -73,13 +70,12 @@ st.write(NWTitleFile)
     
 #             st.write("")
 #             st.write(df)
-            
-            
+                  
 # tryAgain = st.radio("try another file?", ('Yes', 'No'))
 # if tryAgain =='Yes':
 #     getData()
 # else:
-#    st.write('OK, by then')          
+#     st.write('OK, by then')          
 
                     
     

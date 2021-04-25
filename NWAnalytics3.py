@@ -14,6 +14,9 @@ st.set_page_config(layout="wide")
 
 st.title('***Neighbourwoods Analytics 3.0***')
 
+# nwHeader = Image.open("https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/NWAnalyticsTitleTransparent.png")
+# st.image(nwHeader)
+
 currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
 
 tableFrame = st.empty()
@@ -112,12 +115,13 @@ def showTable(data, selectedCols):
 
 # ###################################################   Select data for mapping and analysis
 
+
 def getSelection(data):
     ''' 
     This allows the user to filter the data with an output dataframe called select_df.
     This is also where the dashboard is setup in the sidebar.
     '''
-        
+       
     data_columns = data.columns.values.tolist()
     paramColumns = ['tree_name','species', 'genus', 'family', 'address', 'ownership_code', 
                     'location_code', 'native', 'crown_width','dbh_class', 'defects', 'diversity_level']
@@ -126,6 +130,7 @@ def getSelection(data):
     filtYesOrNo = st.sidebar.radio("", options =('No, use all the data', 'Yes, filter the data'))
     
     if filtYesOrNo == 'Yes, filter the data':
+        
         
         filterType = st.sidebar.radio("", options =('Simple Filter?', 'Detailed Filter?'))
         
@@ -137,34 +142,91 @@ def getSelection(data):
             select_value = st.sidebar.multiselect('Now, select a value for filtering within ' + select_param, value_list)
             select_df = data[data[select_param].isin(select_value)].copy()       
             st.sidebar.subheader("Number of matches = " + str(select_df.shape[0]))
+            
         else:
-            qString = st.sidebar.text_input('Enter your search string', value = 'species == "Norway Maple"')
-            # qString = " ' "
             
-            
-            # def buildQstring():
+            def buildQstring():
                 
-            #     st.sidebar.write('So far the qstring is: ' + qString)               
+                keyCount = 0
                 
-            #     select_param = st.sidebar.selectbox('Select a parameter for filtering', paramColumns)            
-            #     compMethod = st.sidebar.multiselect('Select a method of camparison', options = ['==', '!=', '<', '>'])
-                            
-            #     value_list = data[select_param]
-            #     value_list =pd.unique(value_list)
-            #     select_value = st.sidebar.multiselect('Now, select a value for filtering within ' + select_param, value_list)
-                
-            #     qString = qString + select_param + compMethod + ''' " ''' + select_value  + ''' " ''' + ''' ' '''
-                
-            #     st.sidebar.write(qString)
-                
-            #     return qString
+                def addFilter(qString, keyCount):
+                    
+                    keyCount = keyCount+1
+                    
+                    qString = '(' + qString + ')'
+                    
+                    logOp = st.sidebar.selectbox('Select a logical Operator', (" and ", " or "), key = 'logOpKey' + str(keyCount))
+                    qString = qString + logOp
+                    st.sidebar.write('So far the qstring is: ' + qString)
+                    
+                    newSelectParam = st.sidebar.selectbox('Select a parameter for filtering', 
+                                                        options = paramColumns, key = 'newSelectParamKey' + str(keyCount))            
+                    compMethod = st.sidebar.selectbox('Select a method of camparison', 
+                                                      options = ['==', '!=', '<', '>'], key = 'compMethodKey' + str(keyCount))
+                    value_list = data[newSelectParam]
+                    value_list =pd.unique(value_list)
+                    select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + newSelectParam, value_list, 
+                                                        key = 'select_valueKey' + str(keyCount))
+                    select_value = '"' + select_value + '"' 
+                    
+                    # newQstring = newSelectParam + compMethod + select_value
+                    newQstring = '(' + newSelectParam + compMethod + select_value +')'
+                    # st.sidebar.write("compMethod = ", compMethod)
+                    qString = qString + newQstring
+                    
+                    st.subheader('The results are based on the following search string: ' + qString)
+                    # st.sidebar.write('So far the qstring is: ' + qString)
                     
                     
-            # qString = buildQstring()
-            select_df = data.query(qString)        
+                    
+                    submitYesNo = st.sidebar.radio("",options = ("Submit", 'Add to Filter'), key = 'submitYesNoKey' + str(keyCount))
+                
+                    if submitYesNo == 'Add to Filter':
+                    
+                        qString = addFilter(qString, keyCount)
+                    else:
+                        return qString
+                    
+                
+                
+                
+                select_param = st.sidebar.selectbox('Select a parameter for filtering', paramColumns)            
+                compMethod = st.sidebar.selectbox('Select a method of camparison', 
+                                                  options = ['==', '!=', '<', '>'])
+                value_list = data[select_param]
+                value_list =pd.unique(value_list)
+                select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + select_param, value_list)
+                select_value = '"' + select_value + '"' 
+                
+                qString = select_param + compMethod + select_value
+                st.sidebar.write('So far the qstring is: ' + qString)
+                
+                submitYesNo = st.sidebar.radio("",options = ("Submit", 'Add to Filter'))
+                
+                if submitYesNo == 'Add to Filter':
+                    qString = addFilter(qString, keyCount)
+                
+                # else:
+                #     return qstring
+                                
+                return qString
+                    
+            # try:
+            #     qString = buildQstring()
+            #     filteredDf = data.query(qString)
+            #     st.sidebar.subheader("Number of matches = " + str(filteredDf.shape[0]))
+            #     st.write(filteredDf.head())
+            # except Exception as error:
+            #     st.error(error)    
+            
+            qString = buildQstring()
+            filteredDf = data.query(qString)
+            st.sidebar.subheader("Number of matches = " + str(filteredDf.shape[0]))
+            st.write(filteredDf.head())
+        
     else:
         select_df = data
-    
+ 
     
 ####################################### Show the tree data in a table
     
