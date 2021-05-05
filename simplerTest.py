@@ -9,11 +9,17 @@ import streamlit as st
 
 st.sidebar.header('Hi, just testing')
 
-dashBoard = st.sidebar.empty()
 
-with dashBoard:
-    st.write('Hello again')
+db1 = st.sidebar.empty()
+db2 = st.sidebar.empty()
+db3 =st.sidebar.empty()
+
+with db1:
+    st.write('This is db1')
     
-with dashBoard:
-    st.write('Bye for now')
+with db2:
+    st.write('')
+    
+with db3:
+    st.write('This is db3')
 

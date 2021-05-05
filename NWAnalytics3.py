@@ -21,6 +21,7 @@ currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
 
 tableFrame = st.empty()
 mapFrame = st.empty()
+filterDashBoard = st.sidebar.empty()
 
 @st.cache(allow_output_mutation=True)
 def getData():
@@ -126,9 +127,10 @@ def getSelection(data):
     paramColumns = ['tree_name','species', 'genus', 'family', 'address', 'ownership_code', 
                     'location_code', 'native', 'crown_width','dbh_class', 'defects', 'diversity_level']
     
-    st.sidebar.subheader("Do you want to FILTER the tree data?")
-    filtYesOrNo = st.sidebar.radio("", options =('No, use all the data', 'Yes, filter the data'))
     
+    st.subheader("Do you want to FILTER the tree data?")
+    filtYesOrNo = st.radio("", options =('No, use all the data', 'Yes, filter the data'))
+
     if filtYesOrNo == 'Yes, filter the data':
         
         
@@ -179,13 +181,13 @@ def getSelection(data):
                     
                     
                     
-                    submitYesNo = st.sidebar.radio("",options = ("Submit", 'Add to Filter'), key = 'submitYesNoKey' + str(keyCount))
+                    # submitYesNo = st.sidebar.radio("",options = ("Submit", 'Add to Filter'), key = 'submitYesNoKey' + str(keyCount))
                 
-                    if submitYesNo == 'Add to Filter':
+                    # if submitYesNo == 'Add to Filter':
                     
-                        qString = addFilter(qString, keyCount)
-                    else:
-                        return qString
+                    #     qString = addFilter(qString, keyCount)
+                    # else:
+                    #     return qString
                     
                 
                 

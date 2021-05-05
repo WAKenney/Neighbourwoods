@@ -132,17 +132,18 @@ def getSelection(data):
     
     if filtYesOrNo == 'Yes, filter the data':
         
+        # with filterDashBoard:
         
-        filterType = st.sidebar.radio("", options =('Simple Filter?', 'Detailed Filter?'))
+        filterType = st.radio("", options =('Simple Filter?', 'Detailed Filter?'))
         
         if filterType == 'Simple Filter?':
             
-            select_param = st.sidebar.selectbox('Select a parameter for filtering', paramColumns)
+            select_param = st.selectbox('Select a parameter for filtering', paramColumns)
             value_list = data[select_param]
             value_list =pd.unique(value_list)
-            select_value = st.sidebar.multiselect('Now, select a value for filtering within ' + select_param, value_list)
+            select_value = st.multiselect('Now, select a value for filtering within ' + select_param, value_list)
             select_df = data[data[select_param].isin(select_value)].copy()       
-            st.sidebar.subheader("Number of matches = " + str(select_df.shape[0]))
+            st.subheader("Number of matches = " + str(select_df.shape[0]))
             
         else:
             
@@ -156,17 +157,17 @@ def getSelection(data):
                     
                     qString = '(' + qString + ')'
                     
-                    logOp = st.sidebar.selectbox('Select a logical Operator', (" and ", " or "), key = 'logOpKey' + str(keyCount))
+                    logOp = st.selectbox('Select a logical Operator', (" and ", " or "), key = 'logOpKey' + str(keyCount))
                     qString = qString + logOp
-                    st.sidebar.write('So far the qstring is: ' + qString)
+                    st.write('So far the qstring is: ' + qString)
                     
-                    newSelectParam = st.sidebar.selectbox('Select a parameter for filtering', 
+                    newSelectParam = st.selectbox('Select a parameter for filtering', 
                                                         options = paramColumns, key = 'newSelectParamKey' + str(keyCount))            
-                    compMethod = st.sidebar.selectbox('Select a method of camparison', 
+                    compMethod = st.selectbox('Select a method of camparison', 
                                                       options = ['==', '!=', '<', '>'], key = 'compMethodKey' + str(keyCount))
                     value_list = data[newSelectParam]
                     value_list =pd.unique(value_list)
-                    select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + newSelectParam, value_list, 
+                    select_value = st.selectbox('Now, select a value for filtering within ' + newSelectParam, value_list, 
                                                         key = 'select_valueKey' + str(keyCount))
                     select_value = '"' + select_value + '"' 
                     
@@ -178,7 +179,7 @@ def getSelection(data):
                     st.subheader('The results are based on the following search string: ' + qString)
                     # st.sidebar.write('So far the qstring is: ' + qString)
                     
-                    submitYesNo = st.sidebar.radio("",options = ("Submit", 'Add to Filter'), key = 'submitYesNoKey' + str(keyCount))
+                    submitYesNo = st.radio("",options = ("Submit", 'Add to Filter'), key = 'submitYesNoKey' + str(keyCount))
                 
                     if submitYesNo == 'Add to Filter':
                     
@@ -186,18 +187,18 @@ def getSelection(data):
                     else:
                         return qString
                     
-                select_param = st.sidebar.selectbox('Select a parameter for filtering', paramColumns)            
-                compMethod = st.sidebar.selectbox('Select a method of camparison', 
+                select_param = st.selectbox('Select a parameter for filtering', paramColumns)            
+                compMethod = st.selectbox('Select a method of camparison', 
                                                   options = ['==', '!=', '<', '>'])
                 value_list = data[select_param]
                 value_list =pd.unique(value_list)
-                select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + select_param, value_list)
+                select_value = st.selectbox('Now, select a value for filtering within ' + select_param, value_list)
                 select_value = '"' + select_value + '"' 
                 
                 qString = select_param + compMethod + select_value
-                st.sidebar.write('So far the qstring is: ' + qString)
+                st.write('So far the qstring is: ' + qString)
                 
-                submitYesNo = st.sidebar.radio("",options = ("Submit", 'Add to Filter'))
+                submitYesNo = st.radio("",options = ("Submit", 'Add to Filter'))
                 
                 if submitYesNo == 'Add to Filter':
                     qString = addFilter(qString, keyCount)
@@ -217,7 +218,7 @@ def getSelection(data):
             
             qString = buildQstring()
             filteredDf = data.query(qString)
-            st.sidebar.subheader("Number of matches = " + str(filteredDf.shape[0]))
+            st.subheader("Number of matches = " + str(filteredDf.shape[0]))
             st.write(filteredDf.head())
         
     else:
