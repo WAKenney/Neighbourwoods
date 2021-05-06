@@ -115,6 +115,9 @@ def simpleFilter(data):
         select_param = st.sidebar.selectbox('Select a parameter for filtering', paramColumns, index = 1)
         value_list = data[select_param]
         value_list =pd.unique(value_list)    
+        
+        if len(value_list) ==0:
+            st.warning('Please select a value for filtering within ' + select_param)
         select_value = st.sidebar.multiselect('Now, select a value for filtering within ' + select_param, value_list)
     
     select_df = data[data[select_param].isin(select_value)].copy()       
@@ -172,7 +175,7 @@ def advancedFilter(data):
         
         select_df = data.query(qString)
         
-        st.write(select_df)
+        # st.write(select_df)
         
         return select_df
             
@@ -197,7 +200,9 @@ def advancedFilter(data):
     
     qString = '(' + selectParam + compMethod + select_value +')'
     
-    addFilter(qString, keyCount)
+    select_df = addFilter(qString, keyCount)
+    
+    return select_df
         
 
 
@@ -209,6 +214,7 @@ def showTable(data):
     selectedCols = st.multiselect('Select the ADDITIONAL columns to show in the table', data_columns)
 
     cols = ['tree_name','description'] + selectedCols
+    
     fig = go.Figure(go.Table(
         
         columnwidth = [20,80],
@@ -258,7 +264,7 @@ def mapIt(mapData):
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0})
     fig.update_layout(autosize=False, width=1200, height=600)
     
-    base_map_type = st.radio('Select the basemap', options= ['Map', 'Photo'])
+    base_map_type = st.radio('Select the type of basemap', options= ['Map', 'Photo'])
 
     if base_map_type == 'Map':       
         fig.update_layout(mapbox_style = 'open-street-map')
@@ -292,7 +298,9 @@ def mapIt(mapData):
     
 def diversity(data):
     
-    divLevel = st.sidebar.radio('Select a level of diversity', ('species', 'genus', 'family'))
+    divLevel = st.radio('Select a level of diversity', ('species', 'genus', 'family'))
+    
+    st.header('Tree Diversity Summary by ' + divLevel)
         
     if divLevel == 'species':
        # data = data[data.diversity_level == divLevel]
@@ -311,7 +319,7 @@ def diversity(data):
     topTenPlusOther = topTenSorted.append({divLevel:'Other', 'tree_name': otherTotal}, ignore_index =True)
     topTenPlusOther.rename(columns = {'tree_name': 'frequency'},inplace = True)
     
-    speciesPie = px.pie(topTenPlusOther, values='frequency', names = divLevel, title='Tree Diversity')
+    speciesPie = px.pie(topTenPlusOther, values='frequency', names = divLevel)
     speciesPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     speciesPie.update_layout(showlegend=False)
     
@@ -326,6 +334,8 @@ def diversity(data):
     
     
     sppTable, sppChart =st.beta_columns (2)
+    
+    st.header('Tree Diversity Summary by Crown Projection Area')
     
     with sppTable:
         st.plotly_chart(TopTenTable)
@@ -346,7 +356,7 @@ def diversity(data):
     topTenCpaPlusOther = topTenCpaSorted.append({divLevel:'Other', 'cpa': otherCpaTotal}, ignore_index =True)
     topTenCpaPlusOther.rename(columns = {'cpa': 'Crown Projection Area'},inplace = True)
     
-    CpaPie = px.pie(topTenCpaPlusOther, values='Crown Projection Area', names = divLevel, title='Tree Diversity by Crown Projectin Area')
+    CpaPie = px.pie(topTenCpaPlusOther, values='Crown Projection Area', names = divLevel)
     CpaPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     CpaPie.update_layout(showlegend=False)
     
@@ -378,84 +388,32 @@ def speciesOrigin(data):
     
     originPT.rename(columns = {'native' : 'origin' , 'tree_name': 'frequency'},inplace = True)
     
-    originPie = px.pie(originPT, values='frequency', names = 'origin', title='Tree Species Origin')
+    originPie = px.pie(originPT, values='frequency', names = 'origin')
     
     originPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     originPie.update_layout(showlegend=False)
     
+    st.header('Tree Species Origin Summary')
     st.plotly_chart(originPie)
         
 ########################### Tree condition analysis###########################
 
 def treeCondition(data):
-                    
-    # totalCount = len(data.index)
-    # topTenSpecies = data.loc[: , [divLevel, 'tree_name']]
-    conditionPT = pd.pivot_table(data, index=['defects'], aggfunc='count')
+    conditionData = data.loc[: , ['defects', 'tree_name']]
+    conditionPT = pd.pivot_table(conditionData, index='defects', aggfunc='count')
     conditionPT.reset_index(inplace=True)
-    # topTenSorted = topTenSpeciesPT.sort_values(by='tree_name',ascending=False).head(10)
-    conditionTotal = conditionPT['defects'].sum()
-    otherTotal = totalCount - topTenTotal
-    # topTenPlusOther = topTenSorted.append({divLevel:'Other', 'tree_name': otherTotal}, ignore_index =True)
-    # topTenPlusOther.rename(columns = {'tree_name': 'frequency'},inplace = True)
     
-    conditionPie = px.pie(conditionTotal, values='defects', names = 'defects', title='Tree Condition')
+    conditionPT.rename(columns = {'tree_name': 'frequency'},inplace = True)
+    
+    conditionPie = px.pie(conditionPT, values='frequency', names = 'defects')
+    
     conditionPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
     conditionPie.update_layout(showlegend=False)
     
+    st.header('Tree Condition Summary')
+    st.plotly_chart(conditionPie)
+                    
     
-    TopTenTable = go.Figure(go.Table(
-    header=dict(values=list(topTenPlusOther.columns),
-                fill_color='paleturquoise',
-                align='left'),
-    cells=dict(values=[topTenPlusOther[divLevel], topTenPlusOther.frequency],
-                fill_color='lavender',
-                align='left')))
-    
-    
-    sppTable, sppChart =st.beta_columns (2)
-    
-    with sppTable:
-        st.plotly_chart(TopTenTable)
-    
-    with sppChart:
-        st.plotly_chart(speciesPie)
- 
-        
- 
-    totalCpa = data['cpa'].sum()
-    
-    topTenCpa = data.loc[: , [divLevel, 'cpa']]
-    topTenCpaPT = pd.pivot_table(topTenCpa, index=[divLevel], aggfunc='sum')
-    topTenCpaPT.reset_index(inplace=True)
-    topTenCpaSorted = topTenCpaPT.sort_values(by='cpa',ascending=False).head(10)
-    topTenCpaTotal = topTenCpaSorted['cpa'].sum()
-    otherCpaTotal = totalCpa - topTenCpaTotal
-    topTenCpaPlusOther = topTenCpaSorted.append({divLevel:'Other', 'cpa': otherCpaTotal}, ignore_index =True)
-    topTenCpaPlusOther.rename(columns = {'cpa': 'Crown Projection Area'},inplace = True)
-    
-    CpaPie = px.pie(topTenCpaPlusOther, values='Crown Projection Area', names = divLevel, title='Tree Diversity by Crown Projectin Area')
-    CpaPie.update_traces(insidetextorientation='radial', textinfo='label+percent') 
-    CpaPie.update_layout(showlegend=False)
-    
-    
-    TopTenCpaTable = go.Figure(go.Table(
-    header=dict(values=list(topTenCpaPlusOther.columns),
-                fill_color='paleturquoise',
-                align='left'),
-    cells=dict(values=[topTenCpaPlusOther[divLevel], topTenCpaPlusOther['Crown Projection Area']],
-                fill_color='lavender',
-                align='left')))
-    
-    
-    sppTable, sppChart =st.beta_columns (2)
-    
-    with sppTable:
-        st.plotly_chart(TopTenCpaTable)
-    
-    with sppChart:
-        st.plotly_chart(CpaPie)
-
 
 ########################### Relative DBH Analysis  ###########################
 
@@ -490,11 +448,11 @@ data_columns = df.columns.values.tolist()
 
 ####################################### Filter Menu
 
+st.sidebar.header("Do you want to FILTER the tree data?")
 filterMenu1 = st.sidebar.empty()
 with filterMenu1:
     
-    st.subheader("Do you want to FILTER the tree data?")
-    filtYesOrNo = st.radio("Do you want to FILTER the tree data?", options =('No, use all the data', 'Yes, filter the data'))
+    filtYesOrNo = st.radio("", options =('No, use all the data', 'Yes, filter the data'))
 
 if filtYesOrNo == 'Yes, filter the data':
     
@@ -512,17 +470,34 @@ if filtYesOrNo == 'Yes, filter the data':
 else:  #Don't filter
     select_df = df
     
+st.sidebar.header('Select the function(s) you want to display ')
+selectFunction = st.sidebar.multiselect('',['Show Data', 'Map Trees', 'Tree Diversity', 'Species Origin', 'Tree Condition', 'Ralative DBH', 'Species Suitability'])
 
-selectFunction = st.sidebar.multiselect('Select the function(s) you want to display ',['Show Data', 'Map Trees', 'Tree Diversity', 'Species Origin', 'Tree Condition', 'Ralative DBH', 'Species Suitability'])
+if len(selectFunction) == 0:
+    st.warning("Please select which function(s) you want to use from the sidebar at the right")
 
 if 'Show Data' in selectFunction:
     showTable(select_df)
+    
 if 'Map Trees' in selectFunction:
     mapIt(select_df)
-    
-else:
-    st.write("select a function please!")
 
+if 'Tree Diversity' in selectFunction:
+    diversity(select_df)    
+
+if 'Species Origin' in selectFunction:
+    speciesOrigin(select_df)
+
+if 'Tree Condition' in selectFunction:
+    treeCondition(select_df)
+    
+if 'Ralative DBH' in selectFunction:
+    st.header("Relative DBH analysis is coming soon!")
+
+if 'Species Suitability' in selectFunction:
+    st.header("Species Suitability analysis is coming soon!")
+    
+    
 ##############################################
 
 # dataBtn, mapBtn, diversityBtn, originBtn, conditionBtn, rdbhBtn, suitabilityBtn = st.beta_columns (7)
