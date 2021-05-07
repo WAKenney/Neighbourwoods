@@ -36,14 +36,33 @@ mapFrame = st.empty()
 # DiversityMenu = st.sidebar.empty()
 # OriginMenu = st.sidebar.empty()
 
+colTitles=['tree_name', 'species', 'genus', 'family', 'street', 'address', 'location_code', 'ownership_code', 'number_of_stems', 'dbh',
+   'hard_surface', 'crown_width', 'height_to_crown_base', 'total_height', 'reduced_crown', 'unbalanced_crown', 'defoliation',
+   'weak_or_yellow_foliage', 'dead_or_broken_branch', 'lean', 'poor_branch_attachment', 'branch_scars', 'trunk_scars', 'conks',
+   'branch_rot_or_cavity', 'trunk_rot_or_cavity', 'confined_space','crack', 'girdling_roots', 'recent_trenching', 'cable_or_brace',
+   'wire_conflict', 'sidewalk_conflict', 'structure_conflict', 'tree_conflict', 'sign_conflict', 'comments', 'demerits',
+   'simple_rating', 'cpa', 'rdbh', 'rdbh_class', 'dbh_class', 'native', 'suitability', 'defects']
+       
+
+stringColumns=['tree_name','description', 'species', 'genus', 'family', 'street', 'address','location_code',
+                'ownership_code', 'cable_or_brace','wire_conflict', 'sidewalk_conflict','structure_conflict',
+                'tree_conflict', 'sign_conflict', 'comments', 'simple_rating', 'rdbh_class',
+                'dbh_class', 'native','suitability', 'defects']
+
+numericalColumns = ['number_of_stems', 'dbh', 'hard_surface', 'crown_width', 'height_to_crown_base', 'total_height', 'demerits','cpa', 'rdbh']
+
+condColumns = ['reduced_crown', 'unbalanced_crown', 'defoliation', 'weak_or_yellow_foliage', 'dead_or_broken_branch', 'lean',
+                     'poor_branch_attachment', 'branch_scars', 'trunk_scars', 'conks', 'branch_rot_or_cavity', 'trunk_rot_or_cavity', 'confined_space',
+                     'crack', 'girdling_roots', 'recent_trenching']
+
 codes={'No major defects':"#006400", 'Major health defect':'#7CFC00', 'Major structural defect(s)':'#ADFF2F',
            'Major structural AND health defect(s)':'#FFFF00', 'N/A':'#708090' } #steup colour codes for levels of tree condition
 
 CondcolorOrder = {'defects' : ['No major defects', 'Major health defect', 'Major structural defect(s)',
                                'Major structural AND health defect(s)', 'Condition was not assessed']}# setup order for legend
 
-paramColumns = ['tree_name','species', 'genus', 'family', 'address', 'ownership_code', 
-                    'location_code', 'native', 'crown_width','dbh_class', 'defects', 'diversity_level']
+# paramColumns = ['tree_name','species', 'genus', 'family', 'address', 'ownership_code', 
+                    # 'location_code', 'native', 'crown_width','dbh_class', 'defects', 'diversity_level']
 
 
 @st.cache(allow_output_mutation=True)
@@ -85,6 +104,9 @@ def getData():
                                      'Crown Projection Area (CPA)':'cpa', 'Relative DBH':'rdbh','Relative DBH Class':'rdbh_class',
                                       'DBH class':'dbh_class','Native':'native','Species Suitability':'suitability','Structural Defect':'structural', 'Health Defect':'health'})
     
+    st.write(df.columns)
+    
+    
     def defect_setup(df):
         if ((df['structural'] == 'no') & (df['health'] =='no')):
             return 'No major defects'
@@ -103,21 +125,26 @@ def getData():
         
     df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude)).copy()
     
-    df = df[['tree_name','description','species', 'genus', 'family', 'address', 'ownership_code', 'location_code', 'native', 'crown_width',
-               'cpa', 'dbh_class', 'defects', 'diversity_level', 'latitude', 'longitude']]
+    # df = df[['tree_name','description','species', 'genus', 'family', 'address', 'ownership_code', 'location_code', 'native', 'crown_width',
+    #            'cpa', 'dbh_class', 'defects', 'diversity_level', 'latitude', 'longitude']]
     
     return df
+
+
 #############################################################################
 def simpleFilter(data):
     
     filterMenu3 =st.sidebar.empty()
     with filterMenu3:
-        select_param = st.sidebar.selectbox('Select a parameter for filtering', paramColumns, index = 1)
+        select_param = st.sidebar.selectbox('Select a parameter for filtering', colTitles, index = 1)
         value_list = data[select_param]
         value_list =pd.unique(value_list)    
+        # defaultValue = value_list[0]
         
         if len(value_list) ==0:
             st.warning('Please select a value for filtering within ' + select_param)
+        
+            
         select_value = st.sidebar.multiselect('Now, select a value for filtering within ' + select_param, value_list)
     
     select_df = data[data[select_param].isin(select_value)].copy()       
@@ -128,6 +155,56 @@ def simpleFilter(data):
 
     return select_df
 
+#############################################################################
+
+def oneParameterFilter(data):
+    keyCount = 0    
+        
+    filterMenu3 =st.sidebar.empty()
+    with filterMenu3:
+        oneSelectParam = st.sidebar.selectbox('Select a parameter for filtering', 
+                                        options = colTitles, key = 'oneSelectParamKey' + str(keyCount), index = 2)            
+    
+    if oneSelectParam in stringColumns:
+        oneCompMethodOption = ['==', '!=']
+        filterMenu4 =st.sidebar.empty()
+        with filterMenu4:
+            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = oneCompMethodOption, key = 'oneCompMethodKey' + str(keyCount))
+    
+    
+    elif oneSelectParam in numericalColumns:
+        oneCompMethodOption = ['==', '!=', '<', '<=', '>', '>=']
+        filterMenu4 =st.sidebar.empty()
+        with filterMenu4:
+            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = newCompMethodOption, key = 'oneCompMethodKey' + str(keyCount))
+    
+    else:
+        oneCompMethodOption = ['==', '!=', '<', '<=', '>', '>=']
+        filterMenu4 =st.sidebar.empty()
+        with filterMenu4:
+            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = newCompMethodOption, key = 'oneCompMethodKey' + str(keyCount))
+        
+    value_list = data[oneSelectParam]
+    value_list =pd.unique(value_list)
+    
+    filterMenu5 =st.sidebar.empty()
+    with filterMenu5:
+        select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + oneSelectParam, value_list, index = 0, key = 'select_valueKey' + str(keyCount))
+    # select_value = '"' + select_value + '"'
+    select_value = '"' + str(select_value) + '"'
+    
+    
+    # newQstring = newSelectParam + compMethod + select_value
+    oneQstring = '(' + oneSelectParam + oneCompMethod + select_value +')'
+    
+    st.subheader('The results are based on the following search string: ' + oneQstring)
+    
+    select_df = data.query(oneQstring)
+    
+    return select_df
+        
+
+#############################################################################
 def advancedFilter(data):
       
     def addFilter(qString, keyCount):
@@ -144,27 +221,44 @@ def advancedFilter(data):
         filterMenu6 =st.sidebar.empty()
         with filterMenu6:
         
-            logOp = st.selectbox('FM6 Select a logical Operator', (" and ", " or "), key = 'logOpKey' + str(keyCount))
+            logOp = st.selectbox('Select a logical Operator', (" and ", " or "), key = 'logOpKey' + str(keyCount))
             qString = qString + logOp
         
         # st.sidebar.write('So far the qstring is: ' + qString)
         
         filterMenu3 =st.sidebar.empty()
         with filterMenu3:
-            newSelectParam = st.sidebar.selectbox('FM3 Select a second parameter for filtering', 
-                                            options = paramColumns, key = 'newSelectParamKey' + str(keyCount), index = 2)            
-        filterMenu4 =st.sidebar.empty()
-        with filterMenu4:
-            compMethod = st.sidebar.selectbox('FM4 Select a method of camparison', 
-                                          options = ['==', '!=', '<', '>'], key = 'compMethodKey' + str(keyCount))
+            newSelectParam = st.sidebar.selectbox('Select a second parameter for filtering', 
+                                            options = colTitles, key = 'newSelectParamKey' + str(keyCount), index = 2)            
+        
+        if newSelectParam in stringColumns:
+            newCompMethodOption = ['==', '!=']
+            filterMenu4 =st.sidebar.empty()
+            with filterMenu4:
+                compMethod = st.sidebar.selectbox('Select a method of camparison', options = newCompMethodOption, key = 'compMethodKey' + str(keyCount))
+        
+        
+        elif newSelectParam in numericalColumns:
+            newCompMethodOption = ['==', '!=', '<', '<=', '>', '>=']
+            filterMenu4 =st.sidebar.empty()
+            with filterMenu4:
+                compMethod = st.sidebar.selectbox('Select a method of camparison', options = newCompMethodOption, key = 'compMethodKey' + str(keyCount))
+        
+        else:
+            newCompMethodOption = ['==', '!=', '<', '<=', '>', '>=']
+            filterMenu4 =st.sidebar.empty()
+            with filterMenu4:
+                compMethod = st.sidebar.selectbox('Select a method of camparison', options = newCompMethodOption, key = 'compMethodKey' + str(keyCount))
+            
         value_list = data[newSelectParam]
         value_list =pd.unique(value_list)
         
         filterMenu5 =st.sidebar.empty()
         with filterMenu5:
-            select_value = st.sidebar.selectbox('FM5 Now, select a value for filtering within ' + newSelectParam, value_list, 
-                                            key = 'select_valueKey' + str(keyCount))
-        select_value = '"' + select_value + '"' 
+            select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + newSelectParam, value_list, 
+                                            index = 0, key = 'select_valueKey' + str(keyCount))
+        # select_value = '"' + select_value + '"'
+        select_value = '"' + str(select_value) + '"'
         
         # newQstring = newSelectParam + compMethod + select_value
         newQstring = '(' + newSelectParam + compMethod + select_value +')'
@@ -175,28 +269,32 @@ def advancedFilter(data):
         
         select_df = data.query(qString)
         
-        # st.write(select_df)
-        
         return select_df
             
     keyCount = 0    
         
     filterMenu3 =st.sidebar.empty()
     with filterMenu3:
-        selectParam = st.selectbox('FM3 Select your first parameter for filtering', 
-                                            options = paramColumns, key = 'SelectParamKey' + str(keyCount), index =1)            
+        selectParam = st.selectbox('Select your first parameter for filtering', 
+                                            options = colTitles, key = 'SelectParamKey' + str(keyCount), index =1)            
+    
+    if selectParam in stringColumns:
+        compMethodOption = ['==', '!=']
+    else:
+        compMethodOption = ['==', '!=', '<', '>']
+       
     filterMenu4 =st.sidebar.empty()
     with filterMenu4:
-        compMethod = st.sidebar.selectbox('FM4 Select a method of camparison', 
-                                      options = ['==', '!=', '<', '>'], key = 'compMethodKey' + str(keyCount))
+        compMethod = st.sidebar.selectbox('Select a method of camparison', 
+                                      options = compMethodOption, key = 'compMethodKey' + str(keyCount))
         value_list = data[selectParam]
         value_list = pd.unique(value_list)
     
     filterMenu5 =st.sidebar.empty()
     with filterMenu5:
-        select_value = st.sidebar.selectbox('FM5 Now, select a value for filtering within ' + selectParam, value_list, 
+        select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + selectParam, value_list, 
                                         key = 'select_valueKey' + str(keyCount))
-    select_value = '"' + select_value + '"' 
+    select_value = '"' + str(select_value) + '"' 
     
     qString = '(' + selectParam + compMethod + select_value +')'
     
@@ -459,10 +557,13 @@ if filtYesOrNo == 'Yes, filter the data':
     filterMenu2 = st.sidebar.empty()
     
     with filterMenu2:         
-        filterType = st.radio("Select the type of filter you want to use", options =('Simple Filter?', 'Detailed Filter?'))
+        filterType = st.radio("Select the type of filter you want to use", options =('Filter by List?', 'One Parameter Filter?', 'Two Parameter Filter?'))
         
-    if filterType == 'Simple Filter?':
+    if filterType == 'Filter by List?':
         select_df = simpleFilter(df)
+        
+    elif filterType == 'One Parameter Filter?':
+        select_df = oneParameterFilter(df)
     
     else:
         select_df = advancedFilter(df)
