@@ -158,48 +158,64 @@ def simpleFilter(data):
 #############################################################################
 
 def oneParameterFilter(data):
-    keyCount = 0    
         
     filterMenu3 =st.sidebar.empty()
     with filterMenu3:
-        oneSelectParam = st.sidebar.selectbox('Select a parameter for filtering', 
-                                        options = colTitles, key = 'oneSelectParamKey' + str(keyCount), index = 2)            
+        oneSelectParam = st.sidebar.selectbox('Select a parameter for filtering', options = colTitles, index = 2)            
     
     if oneSelectParam in stringColumns:
         oneCompMethodOption = ['==', '!=']
         filterMenu4 =st.sidebar.empty()
         with filterMenu4:
-            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = oneCompMethodOption, key = 'oneCompMethodKey' + str(keyCount))
-    
+            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = oneCompMethodOption)
     
     elif oneSelectParam in numericalColumns:
         oneCompMethodOption = ['==', '!=', '<', '<=', '>', '>=']
         filterMenu4 =st.sidebar.empty()
         with filterMenu4:
-            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = newCompMethodOption, key = 'oneCompMethodKey' + str(keyCount))
+            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = oneCompMethodOption)
     
     else:
         oneCompMethodOption = ['==', '!=', '<', '<=', '>', '>=']
         filterMenu4 =st.sidebar.empty()
         with filterMenu4:
-            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = newCompMethodOption, key = 'oneCompMethodKey' + str(keyCount))
+            oneCompMethod = st.sidebar.selectbox('Select a method of camparison', options = oneCompMethodOption)
         
     value_list = data[oneSelectParam]
     value_list =pd.unique(value_list)
     
     filterMenu5 =st.sidebar.empty()
     with filterMenu5:
-        select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + oneSelectParam, value_list, index = 0, key = 'select_valueKey' + str(keyCount))
-    # select_value = '"' + select_value + '"'
-    select_value = '"' + str(select_value) + '"'
+        
+        if oneCompMethod in ['==', '!=']:
+            select_value = st.sidebar.selectbox('Now, select a value for filtering within ' + oneSelectParam, value_list, index = 0)
+        else:
+            minValue = int(data[oneSelectParam].min())
+            maxValue = int(data[oneSelectParam].max())
+            
+            if oneSelectParam in condColumns:
+                select_value = st.sidebar.slider('Now, select a value for filtering within ' + oneSelectParam, minValue, maxValue, step = 1)
+            else:
+                select_value = st.sidebar.slider('Now, select a value for filtering within ' + oneSelectParam, minValue, maxValue)
     
+    if oneCompMethod == '==':
+        select_df = df.loc[(df[oneSelectParam] ==  select_value)]
+    elif oneCompMethod == '!=':
+        select_df = df.loc[(df[oneSelectParam] !=  select_value)]
+    elif oneCompMethod == '<':
+        select_df = df.loc[(df[oneSelectParam] <  select_value)]
+    elif oneCompMethod == '<=':
+        select_df = df.loc[(df[oneSelectParam] <=  select_value)]
+    elif oneCompMethod == '>':
+        select_df = df.loc[(df[oneSelectParam] >  select_value)]
+    else:
+        select_df = df.loc[(df[oneSelectParam] >=  select_value)]
     
-    # newQstring = newSelectParam + compMethod + select_value
-    oneQstring = '(' + oneSelectParam + oneCompMethod + select_value +')'
+    oneQstring =  oneSelectParam + oneCompMethod + str(select_value)
+    st.subheader('The results are based on the following search string: ' + oneQstring + ' with ' + str(select_df.shape[0]) + ' matches.'  )
     
-    st.subheader('The results are based on the following search string: ' + oneQstring)
-    
-    select_df = data.query(oneQstring)
+    with filterMenu4:
+        st.sidebar.subheader("Number of matches = " + str(select_df.shape[0]))
     
     return select_df
         
@@ -299,6 +315,9 @@ def advancedFilter(data):
     qString = '(' + selectParam + compMethod + select_value +')'
     
     select_df = addFilter(qString, keyCount)
+    
+    with filterMenu4:
+        st.sidebar.subheader("Number of matches = " + str(select_df.shape[0]))
     
     return select_df
         
