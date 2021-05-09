@@ -317,10 +317,10 @@ def mapIt(mapData):
     
     st.plotly_chart(fig)
     
-    saveHtmlYesNo = st.radio("Do you want to save the map as a static HTML?", options = ['Yes', 'No'])
-    if saveHtmlYesNo == 'Yes':
-        htmlMapName = st.text_input("Enter the path and NAME for tthe HTML file to be saved.  Do NOT surround it in quotation marks but")
-        plotly.offline.plot(fig, filename = htmlMapName)
+    # saveHtmlYesNo = st.radio("Do you want to save the map as a static HTML?", options = ['Yes', 'No'])
+    # if saveHtmlYesNo == 'Yes':
+    #     htmlMapName = st.text_input("Enter the path and NAME for tthe HTML file to be saved.  Do NOT surround it in quotation marks but")
+    #     plotly.offline.plot(fig, filename = htmlMapName)
     
     return fig
 
