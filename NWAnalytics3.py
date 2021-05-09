@@ -8,6 +8,7 @@ Created on Sun Apr 25 14:20:13 2021
 import pandas as pd
 import geopandas as gpd
 import streamlit as st
+import plotly
 import plotly.express as px
 import plotly.graph_objects as go
 import numpy as np
@@ -198,7 +199,8 @@ def oneParameterFilter(data, keyCount):
         select_df = df.loc[(data[oneSelectParam] >=  select_value)]
     
     oneQstring =  oneSelectParam + oneCompMethod + str(select_value)
-    st.subheader('The results are based on the following search string: ' + oneQstring + ' with ' + str(select_df.shape[0]) + ' matches.'  )
+    
+    resultsMessage = ('The results are based on the following search string: ' + oneQstring + ' with ' + str(select_df.shape[0]) + ' matches.'  )
     
     return select_df
         
@@ -258,12 +260,17 @@ def showTable(data):
 ################################################### Map the selected data
 
 def mapIt(mapData):
+    
+    # try:
+    if mapData.empty:
+        st.warning("Be sure to finish selecting the filtering values in the sidebar to the left.")
+        
     avLat = mapData['latitude'].mean()  #calculate the average Latitude value and average Longitude value to use to centre the map
     avLon = mapData['longitude'].mean()
     
     mapData['condColor'] = mapData['defects'].map(codes) # create a column called conColor and map the color values based on 
                                                                 #the condition code in the dictionary called condColor
-
+    
     map_df = mapData[mapData['latitude'].notna()]
     
     fig = px.scatter_mapbox(data_frame = map_df, lat="latitude", lon="longitude", 
@@ -286,7 +293,7 @@ def mapIt(mapData):
     fig.update_layout(autosize=False, width=1200, height=600)
     
     base_map_type = st.radio('Select the type of basemap', options= ['Map', 'Photo'])
-
+    
     if base_map_type == 'Map':       
         fig.update_layout(mapbox_style = 'open-street-map')
     else:    
@@ -310,10 +317,15 @@ def mapIt(mapData):
     
     st.plotly_chart(fig)
     
-    
+    saveHtmlYesNo = st.radio("Do you want to save the map as a static HTML?", options = ['Yes', 'No'])
+    if saveHtmlYesNo == 'Yes':
+        htmlMapName = st.text_input("Enter the path and NAME for tthe HTML file to be saved.  Do NOT surround it in quotation marks but")
+        plotly.offline.plot(fig, filename = htmlMapName)
     
     return fig
 
+    # except:
+    #     st.warning("Be sure to select values from the sidebar at the left")
 
 # ########################################## Diversity ############################################
     
@@ -474,20 +486,25 @@ with filterMenu1:
 
 if filtYesOrNo == 'Yes, filter the data':
     
-    filterMenu2 = st.sidebar.empty()
+    try:
     
-    with filterMenu2:         
-        filterType = st.radio("Select the type of filter you want to use", options =('Filter by List?', 'One Parameter Filter?', 'Two Parameter Filter?'))
+        filterMenu2 = st.sidebar.empty()
         
-    if filterType == 'Filter by List?':
-        select_df = simpleFilter(df)
+        with filterMenu2:         
+            filterType = st.radio("Select the type of filter you want to use", options =('Filter by List?', 'One Parameter Filter?', 'Two Parameter Filter?'))
+            
+        if filterType == 'Filter by List?':
+            select_df = simpleFilter(df)
+            
+        elif filterType == 'One Parameter Filter?':
+            select_df = oneParameterFilter(df, 0)
         
-    elif filterType == 'One Parameter Filter?':
-        select_df = oneParameterFilter(df, 0)
-    
-    else:
-        select_df = twoParameterFilter(df)
-
+        else:
+            select_df = twoParameterFilter(df)
+    except:
+        st.warning("Be sure to select a filtering method from the sidebar at the left.")
+        
+        
 else:  #Don't filter
     select_df = df
     
