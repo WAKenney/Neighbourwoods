@@ -23,18 +23,11 @@ st.title('***Neighbourwoods Analytics 3.0***')
 mainScreen = st.empty()
 mainScreen.write('')
 
-# nwHeader = Image.open("https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/NWAnalyticsTitleTransparent.png")
-# st.image(nwHeader)
-
 currentDir = "https://raw.githubusercontent.com/WAKenney/Neighbourwoods/main/"
 
 filterDashBoard = st.sidebar.empty()
 tableFrame = st.empty()
 mapFrame = st.empty()
-# ShowDataMenu = st.sidebar.empty()
-# MapItMenu= st.sidebar.empty()
-# DiversityMenu = st.sidebar.empty()
-# OriginMenu = st.sidebar.empty()
 
 colTitles=['tree_name', 'species', 'genus', 'family', 'street', 'address', 'location_code', 'ownership_code', 'number_of_stems', 'dbh',
    'hard_surface', 'crown_width', 'height_to_crown_base', 'total_height', 'reduced_crown', 'unbalanced_crown', 'defoliation',
@@ -60,10 +53,6 @@ codes={'No major defects':"#006400", 'Major health defect':'#7CFC00', 'Major str
 
 CondcolorOrder = {'defects' : ['No major defects', 'Major health defect', 'Major structural defect(s)',
                                'Major structural AND health defect(s)', 'Condition was not assessed']}# setup order for legend
-
-# paramColumns = ['tree_name','species', 'genus', 'family', 'address', 'ownership_code', 
-                    # 'location_code', 'native', 'crown_width','dbh_class', 'defects', 'diversity_level']
-
 
 @st.cache(allow_output_mutation=True)
 def getData():
@@ -124,10 +113,7 @@ def getData():
     df = pd.merge(df, speciesTable[['species', 'diversity_level']], on="species", how="left", sort=False)
         
     df = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df.longitude, df.latitude)).copy()
-    
-    # df = df[['tree_name','description','species', 'genus', 'family', 'address', 'ownership_code', 'location_code', 'native', 'crown_width',
-    #            'cpa', 'dbh_class', 'defects', 'diversity_level', 'latitude', 'longitude']]
-    
+   
     return df
 
 
@@ -213,9 +199,6 @@ def oneParameterFilter(data, keyCount):
     
     oneQstring =  oneSelectParam + oneCompMethod + str(select_value)
     st.subheader('The results are based on the following search string: ' + oneQstring + ' with ' + str(select_df.shape[0]) + ' matches.'  )
-    
-    # with filterMenu4:
-    #     st.sidebar.subheader("Number of matches = " + str(select_df.shape[0]))
     
     return select_df
         
@@ -464,9 +447,6 @@ def treeCondition(data):
 
 
 
-
-
-########################### Backup tree table  ###########################
    
 ################################# setup up the filtering and function selection  ##################################
 
@@ -514,7 +494,7 @@ else:  #Don't filter
 ########################## setup function selection ##########################
 
 if len(selectFunction) == 0:
-    st.warning("Please select which function(s) you want to use from the sidebar at the right")
+    st.warning("Please select which function(s) you want to use from the sidebar at the left.  If it is not visible, click on the > simbols at the top left of the screen.")
 
 if 'Show Data' in selectFunction:
     showTable(select_df)
