@@ -23,6 +23,7 @@ st.set_page_config(layout="wide")
 
 st.title('***Neighbourwoods Analytics 3.0***')
 
+filterResultHeader = st.empty()
 mainScreen = st.empty()
 mainScreen.write('')
 
@@ -141,6 +142,9 @@ def simpleFilter(data):
     filterMenu4 =st.sidebar.empty()
     with filterMenu4:
         st.sidebar.subheader("Number of matches = " + str(select_df.shape[0]))
+        
+    with filterResultHeader:
+        st.header('The following is based on the data filtered by ' + select_param + ' in the list ' + str(select_value))
 
     return select_df
 
@@ -202,7 +206,9 @@ def oneParameterFilter(data, keyCount):
     
     oneQstring =  oneSelectParam + oneCompMethod + str(select_value)
     
-    resultsMessage = ('The results are based on the following search string: ' + oneQstring + ' with ' + str(select_df.shape[0]) + ' matches.'  )
+    
+    with filterResultHeader:
+        st.header('The results are based on the following search string: ' + oneQstring + ' with ' + str(select_df.shape[0]) + ' matches.'  )
     
     return select_df
         
@@ -229,6 +235,9 @@ def twoParameterFilter(data):
     with filterMenu4:
         st.sidebar.subheader("The combined number of matches = " + str(select_df.shape[0]))
     
+    with filterResultHeader: #This clears anything that is already in the filterResultsHeader
+        st.write("")    
+
     return select_df
     
 ##################################################### Show data table ##########################################
