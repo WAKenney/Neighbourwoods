@@ -1,6 +1,6 @@
 plotly==4.14.3
 numpy==1.19.2
-dash_table==4.4.1
+dash_table
 streamlit==0.81.1
 geopandas==0.8.1
 dash==1.19.0
