@@ -16,6 +16,8 @@ import dash
 import dash_table
 from PIL import Image
 import os
+from streamlit_folium import folium_static
+import folium
 
 st.set_page_config(layout="wide")
 
@@ -257,6 +259,33 @@ def showTable(data):
     
     st.plotly_chart(fig)
     
+###########################  Using Folium
+def mapItFolium(mapData):
+
+    if mapData.empty:
+        st.warning("Be sure to finish selecting the filtering values in the sidebar to the left.")
+        
+    mapData = mapData[mapData['latitude'].notna()].copy()
+    
+    avLat = mapData['latitude'].mean()  #calculate the average Latitude value and average Longitude value to use to centre the map
+    avLon = mapData['longitude'].mean()
+    
+    avLat=mapData['latitude'].mean()
+    avLon=mapData['longitude'].mean()
+    maxLat=mapData['latitude'].max()
+    minLat=mapData['latitude'].min()
+    maxLon=mapData['longitude'].max()
+    minLon=mapData['longitude'].min()
+    
+    treeMap = folium.Map(location=[avLat, avLon], tiles='OpenStreetMap', zoom_start=18,max_zoom=28, min_zoom=1, width =900, height = 600)
+    treeMap.fit_bounds([[minLat,minLon], [maxLat,maxLon]])
+    
+    mapData.apply(lambda mapData:folium.CircleMarker(location=[mapData["latitude"], mapData["longitude"]], color='green', 
+                         radius=2 , popup = folium.Popup(mapData["description"], max_width=450, min_width=300)).add_to(treeMap), axis=1)
+        
+    folium_static(treeMap)
+
+    
 ################################################### Map the selected data
 
 def mapIt(mapData):
@@ -275,10 +304,13 @@ def mapIt(mapData):
     
     fig = px.scatter_mapbox(data_frame = map_df, lat="latitude", lon="longitude", 
                             hover_name='tree_name',
-                            hover_data={"tree_name": False,
+                            hover_data={"tree_name": True,
                                         "description": False,
                                         'address': True,
+                                        'location_code': True,
+                                        'ownership_code': True,
                                         'species': True,
+                                        'dbh' : True,
                                         'defects': True,
                                         'latitude': False,
                                         'longitude': False     
@@ -486,23 +518,24 @@ with filterMenu1:
 
 if filtYesOrNo == 'Yes, filter the data':
     
-    try:
+    # try:
     
-        filterMenu2 = st.sidebar.empty()
+    filterMenu2 = st.sidebar.empty()
+    
+    with filterMenu2:         
+        filterType = st.radio("Select the type of filter you want to use", options =('Filter by List?', 'One Parameter Filter?', 'Two Parameter Filter?'))
         
-        with filterMenu2:         
-            filterType = st.radio("Select the type of filter you want to use", options =('Filter by List?', 'One Parameter Filter?', 'Two Parameter Filter?'))
-            
-        if filterType == 'Filter by List?':
-            select_df = simpleFilter(df)
-            
-        elif filterType == 'One Parameter Filter?':
-            select_df = oneParameterFilter(df, 0)
+    if filterType == 'Filter by List?':
+        select_df = simpleFilter(df)
         
-        else:
-            select_df = twoParameterFilter(df)
-    except:
-        st.warning("Be sure to select a filtering method from the sidebar at the left.")
+    elif filterType == 'One Parameter Filter?':
+        select_df = oneParameterFilter(df, 0)
+    
+    else:
+        select_df = twoParameterFilter(df)
+    
+    # except:
+    #     st.warning("Be sure to select a filtering method from the sidebar at the left.")
         
         
 else:  #Don't filter
