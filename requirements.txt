@@ -1,7 +1,10 @@
+plotly==4.14.3
+numpy==1.19.2
+dash_table==4.4.1
+streamlit==0.81.1
 geopandas==0.8.1
 dash==1.19.0
 pandas==1.2.3
-numpy==1.19.2
-plotly==4.14.3
-dash_table
-streamlit==0.80.0
+folium==0.11.0
+streamlit_folium==0.1.1
+Pillow==8.2.0
